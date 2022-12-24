@@ -1,0 +1,233 @@
+{
+	"info": {
+		"_postman_id": "5c501079-c788-462c-a7f5-c6c02c5f8bff",
+		"name": "LoadTestAPI_newman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23857125"
+	},
+	"item": [
+		{
+			"name": "Get Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"var token = responseJson.access_token;\r",
+							"pm.environment.set(\"token\", token)\r",
+							"console.log(\"token: \"+token)\r",
+							"\r",
+							"\r",
+							"pm.test(\"Assert token type\",function(){\r",
+							"   pm.expect(responseJson.token_type).to.be.equal(\"Bearer\")\r",
+							"})\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "sec-ch-ua",
+						"value": "\"Chromium\";v=\"106\", \"Google Chrome\";v=\"106\", \"Not;A=Brand\";v=\"99\"",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"app_version\": \"6.0.0.51302039\",\r\n  \"client_id\": \"android\",\r\n  \"device_type\": \"samsung SM-J600FN\",\r\n  \"device_version\": \"9\",\r\n  \"grant_type\": \"password\",\r\n  \"password\": \"move4test!@#\",\r\n  \"username\": \"user3873114@doesnt exist.com\"\r\n}\r\n"
+				},
+				"url": {
+					"raw": "https://stp-loadtest-appapi.azurewebsites.net/api/v1/auth/token",
+					"protocol": "https",
+					"host": [
+						"stp-loadtest-appapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//console.log(\"token: \"+pm.variables.get(\"token\"))\r",
+							"var responseAccount = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Assert firstname and lastName\",function(){\r",
+							"   pm.expect(responseAccount.user.firstName).to.eql(\"User3873114\")\r",
+							"   pm.expect(responseAccount.user.lastName).to.be.equal(\"Client4146938\")\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=utf-8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://stp-loadtest-appapi.azurewebsites.net/api/v1/accounts/current",
+					"protocol": "https",
+					"host": [
+						"stp-loadtest-appapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"v1",
+						"accounts",
+						"current"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get License plates",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//console.log(\"token: \"+pm.variables.get(\"token\"))\r",
+							"var responseLicenseplates = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Assert number of license plates\",function(){\r",
+							"   pm.expect(responseLicenseplates.count).to.be.equal(2)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=utf-8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://stp-loadtest-appapi.azurewebsites.net/api/v1/licenseplates",
+					"protocol": "https",
+					"host": [
+						"stp-loadtest-appapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"v1",
+						"licenseplates"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}
